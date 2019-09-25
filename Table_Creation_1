@@ -1,0 +1,362 @@
+
+select * from semester_details;
+select * from attendance_signup;
+select * from events;
+select * from program;
+select * from student;
+select * from semester_details;
+
+--Student, Event, Roll Up Sums
+select NVL(sid,'Rollup Total') as "Student ID", nvl(event_name,'Total') as "Event Name", sum(points_allocated) as "Points"
+from attendance_signup a, events e
+where a.eventid = e.event_id
+group by rollup(sid,event_name)
+;
+
+--Program Level Attendance Count
+select e.event_name, p.type, count(a.sid) as "Student Attendance"
+from program p, attendance_signup a, semester_details sd, events e
+where a.sid = sd.sid
+and sd.pid = p.pid
+and a.eventid = e.event_id
+group by p.type, e.event_name
+order by e.event_name
+;
+
+--Report Query
+
+with s1
+as
+(
+select s.sid as "Student ID",s.firstname as "First Name",s.middlename as "Middle Name",s.lastname as "Last Name",p.type as "Program Type" 
+                from student s,program p,semester_details sd
+                where s.sid=sd.sid(+)
+                and p.pid=sd.pid
+                
+)
+,
+s2
+as
+(
+select s.sid as "Student ID",NVL(sum(points_allocated),0) as "Academic Total"
+                from student s,attendance_signup a,events e
+                where a.eventid=e.event_id
+                and s.sid=a.sid(+)
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10021'
+                group by s.sid
+
+)
+,
+s3
+as
+(
+select s.sid as "Student ID",sum(points_allocated) as "Social Total"
+                from student s,attendance_signup a,events e
+                where e.event_id=a.eventid
+                and s.sid=a.sid
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10022'
+                group by s.sid
+
+)
+,
+s4
+as
+(
+select s.sid as "Student ID",sum(points_allocated) as "Ethical Total"
+                from student s,attendance_signup a,events e
+                where e.event_id=a.eventid
+                and s.sid=a.sid
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10023'
+                group by s.sid
+)
+,
+s5 as
+(
+select s.sid as "Student ID",sum(points_allocated) as "CM in Academic Total",CASE WHEN sum(points_allocated)>8 THEN 'Y' ELSE 'N' END as "IS CM(ACADEMIC)"
+                from student s,attendance_signup a,events e
+                where e.event_id=a.eventid
+                and s.sid=a.sid
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10021'
+                and a.signuptypeid='SUT10004'
+                group by s.sid
+)
+,
+s6
+as
+(
+select s.sid as "Student ID",sum(points_allocated) as "CM in Social Total",CASE WHEN sum(points_allocated)>8 THEN 'Y' ELSE 'N' END as "IS CM(SOCIAL)"
+                from student s,attendance_signup a,events e
+                where e.event_id=a.eventid
+                and s.sid=a.sid
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10022'
+                and a.signuptypeid='SUT10004'
+                group by s.sid
+
+)
+,
+s7
+as
+(
+select s.sid as "Student ID",NVL(sum(points_allocated),0) as "Grand Total"
+                from student s,attendance_signup a,events e
+                where a.eventid=e.event_id
+                and s.sid=a.sid(+)
+                --and e.pillar_type='Academic'
+                group by s.sid
+
+)
+
+select s1."Student ID",s1."First Name",s1."Middle Name",s1."Last Name",s1."Program Type",NVL(s2."Academic Total",0) as "Academic Total",
+NVL(s3."Social Total",0) as "Social Total",NVL(s4."Ethical Total",0) as "Ethical Total",NVL(s5."CM in Academic Total",0) as "CM in Academic Total",
+NVL(s5."IS CM(ACADEMIC)",'N') as "IS CM(ACADEMIC)",NVL(s6."CM in Social Total",0) as "CM in Social Total",NVL(s6."IS CM(SOCIAL)",'N') as "IS CM(SOCIAL)",
+NVL(s7."Grand Total",0) as "Grand Total"
+from s1,s2,s3,s4,s5,s6,s7
+where s1."Student ID"=s2."Student ID"(+)
+and s1."Student ID"=s3."Student ID"(+)
+and s1."Student ID"=s4."Student ID"(+)
+and s1."Student ID"=s5."Student ID"(+)
+and s1."Student ID"=s6."Student ID"(+)
+and s1."Student ID"=s7."Student ID"(+)
+and NVL(s7."Grand Total",0)<15;
+
+--Comprehensive Report Query
+with s1
+as
+(
+select s.sid as "Student ID",s.firstname as "First Name",s.middlename as "Middle Name",s.lastname as "Last Name",p.type as "Program Type" 
+                from student s,program p,semester_details sd
+                where s.sid=sd.sid(+)
+                and p.pid=sd.pid
+                
+)
+,
+s2
+as
+(
+select s.sid as "Student ID",NVL(sum(points_allocated),0) as "Academic Total"
+                from student s,attendance_signup a,events e
+                where a.eventid=e.event_id
+                and s.sid=a.sid(+)
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10021'
+                group by s.sid
+
+)
+,
+s3
+as
+(
+select s.sid as "Student ID",sum(points_allocated) as "Social Total"
+                from student s,attendance_signup a,events e
+                where e.event_id=a.eventid
+                and s.sid=a.sid
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10022'
+                group by s.sid
+
+)
+,
+s4
+as
+(
+select s.sid as "Student ID",sum(points_allocated) as "Ethical Total"
+                from student s,attendance_signup a,events e
+                where e.event_id=a.eventid
+                and s.sid=a.sid
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10023'
+                group by s.sid
+)
+,
+s5 as
+(
+select s.sid as "Student ID",sum(points_allocated) as "CM in Academic Total",CASE WHEN sum(points_allocated)>8 THEN 'Y' ELSE 'N' END as "IS CM(ACADEMIC)"
+                from student s,attendance_signup a,events e
+                where e.event_id=a.eventid
+                and s.sid=a.sid
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10021'
+                and a.signuptypeid='SUT10004'
+                group by s.sid
+)
+,
+s6
+as
+(
+select s.sid as "Student ID",sum(points_allocated) as "CM in Social Total",CASE WHEN sum(points_allocated)>8 THEN 'Y' ELSE 'N' END as "IS CM(SOCIAL)"
+                from student s,attendance_signup a,events e
+                where e.event_id=a.eventid
+                and s.sid=a.sid
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10022'
+                and a.signuptypeid='SUT10004'
+                group by s.sid
+
+)
+,
+s7
+as
+(
+select s.sid as "Student ID",NVL(sum(points_allocated),0) as "Grand Total"
+                from student s,attendance_signup a,events e
+                where a.eventid=e.event_id
+                and s.sid=a.sid(+)
+                --and e.pillar_type='Academic'
+                group by s.sid
+
+)
+
+select s1."Student ID",s1."First Name",s1."Middle Name",s1."Last Name",s1."Program Type",NVL(s2."Academic Total",0) as "Academic Total",
+NVL(s3."Social Total",0) as "Social Total",NVL(s4."Ethical Total",0) as "Ethical Total",NVL(s5."CM in Academic Total",0) as "CM in Academic Total",
+NVL(s5."IS CM(ACADEMIC)",'N') as "IS CM(ACADEMIC)",NVL(s6."CM in Social Total",0) as "CM in Social Total",NVL(s6."IS CM(SOCIAL)",'N') as "IS CM(SOCIAL)",
+NVL(s7."Grand Total",0) as "Grand Total"
+from s1,s2,s3,s4,s5,s6,s7
+where s1."Student ID"=s2."Student ID"(+)
+and s1."Student ID"=s3."Student ID"(+)
+and s1."Student ID"=s4."Student ID"(+)
+and s1."Student ID"=s5."Student ID"(+)
+and s1."Student ID"=s6."Student ID"(+)
+and s1."Student ID"=s7."Student ID"(+)
+and NVL(s7."Grand Total",0) >45
+and "IS CM(SOCIAL)"='Y'
+and "IS CM(ACADEMIC)"='Y';
+
+--Additional Trigger to stop inserting invalid data into attendance signup
+Create Or Replace Trigger Date_Val
+before                    
+Insert On attendance_signup
+for each row             
+
+declare
+
+v_eventdt attendance_signup.event_date%type;    
+v_dod attendance_signup.event_date%type;
+v_diffdate NUMBER;
+
+
+Begin
+
+v_eventdt:=:new.event_date; /*Pass the cust_id from the update statement by making use of pseudo variable to v_custid*/
+v_dod:=:new.dateofdeclaration;
+
+v_diffdate:=round(TO_date(v_dod,'DD-MON-YY') - TO_date(v_eventdt,'DD-MON-YY'),0);
+
+IF v_diffdate > 30 THEN 
+
+Raise_application_Error(-20001,'The time frame to log this event into the system has been exceeded');
+
+END IF;
+
+
+End;
+/
+
+--Procedure to calculate points from the attendance_signup table
+create or replace procedure fill_report
+AS
+
+as_old_sid attendance_signup.sid%type;
+as_detail attendance_signup %ROWTYPE;
+as_event_id attendance_signup.eventid%type;
+as_pillar_type events.pillar_type%type;
+as_points events.points_allocated%type;
+new_points varchar2(20);
+curr_points varchar2(20);
+s_flag number(1);
+
+CURSOR c1 IS SELECT *
+FROM attendance_signup
+WHERE pending_flag =1
+--group by sid
+ORDER BY dateofdeclaration;
+
+BEGIN
+s_flag:=1;
+
+OPEN c1;
+LOOP
+new_points := 0;
+
+FETCH c1 INTO as_detail;
+EXIT WHEN c1%NOTFOUND;
+
+IF (s_flag =1) THEN 
+as_old_sid := as_detail.sid;
+s_flag:= 0;
+END IF;
+
+IF (as_detail.sid = as_old_sid) THEN
+
+    SELECT event_id,pillar_type,points_allocated
+    INTO as_event_id, as_pillar_type, as_points --create var
+    FROM events
+    WHERE event_id = as_detail.eventid;
+    
+    new_points := new_points + as_points; --create var
+    
+    UPDATE student_report SET points_obtained = points_obtained + new_points
+    WHERE sid = as_detail.sid;
+    
+    SELECT points_obtained INTO curr_points
+    FROM student_report
+    WHERE sid = as_detail.sid;
+    
+    IF curr_points <= 45 THEN
+    
+    UPDATE student_report SET remaining_point = 45 - points_obtained
+    WHERE sid = as_detail.sid;
+    
+    ELSE
+    
+    UPDATE student_report SET remaining_point = 'PRO'
+    WHERE sid = as_detail.sid;
+    
+    END IF;
+    
+    UPDATE attendance_signup SET pending_flag = 0
+    WHERE sid = as_detail.sid;
+
+ELSE
+
+    SELECT event_id,pillar_type,points_allocated
+    INTO as_event_id, as_pillar_type, as_points --create var
+    FROM events
+    WHERE event_id = as_detail.eventid;
+    
+    new_points := new_points + as_points; --create var
+    
+    UPDATE student_report SET points_obtained = points_obtained + new_points
+    WHERE sid = as_detail.sid;
+    
+    SELECT points_obtained INTO curr_points
+    FROM student_report
+    WHERE sid = as_detail.sid;
+    
+    IF curr_points <= 45 THEN
+    
+    UPDATE student_report SET remaining_point = 45 - points_obtained
+    WHERE sid = as_detail.sid;
+    
+    ELSE
+    
+    UPDATE student_report SET remaining_point = 'PRO'
+    WHERE sid = as_detail.sid;
+    
+    END IF;
+    
+    UPDATE attendance_signup SET pending_flag = 0
+    WHERE sid = as_detail.sid;
+    
+as_old_sid := as_detail.sid;
+END IF;
+
+END LOOP;
+CLOSE c1;
+
+END;
+/
