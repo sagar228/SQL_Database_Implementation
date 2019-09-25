@@ -1,0 +1,377 @@
+select * from student;
+select * from scholarship;
+
+--SCHOLARSHIP DETAILS
+CREATE SEQUENCE SCHOLARSHIP_DETAILS_SEQ
+START WITH 10001
+INCREMENT by 1
+MAXVALUE 99999
+;
+
+CREATE TRIGGER SCHOLARSHIP_DETAILS_TRG 
+BEFORE INSERT ON SCHOLARSHIP_DETAILS 
+FOR EACH ROW 
+BEGIN
+  <<COLUMN_SEQUENCES>>
+  BEGIN
+    IF INSERTING THEN
+      SELECT 'SD' || SCHOLARSHIP_DETAILS_SEQ.NEXTVAL INTO :NEW.TYPEID FROM SYS.DUAL;
+    END IF;
+  END COLUMN_SEQUENCES;
+END;
+/
+select * from scholarship_details;
+
+insert into scholarship_details values ('S10055','SC10041','11-AUG-2017','01-JAN-2018','1');
+insert into scholarship_details values ('S10055','SC10061','11-AUG-2017','01-JAN-2018','1');
+insert into scholarship_details values ('S10056','SC10071','11-AUG-2017','01-JAN-2018','1');
+insert into scholarship_details values ('S10056','SC10080','11-AUG-2017','01-JAN-2018','1');
+insert into scholarship_details values ('S10057','SC10045','11-AUG-2017','01-JAN-2018','1');
+insert into scholarship_details values ('S10057','SC10069','11-AUG-2017','01-JAN-2018','1');
+insert into scholarship_details values ('S10058','SC10049','11-AUG-2017','01-JAN-2018','1');
+insert into scholarship_details values ('S10060','SC10077','11-AUG-2017','01-JAN-2018','1');
+insert into scholarship_details values ('S10063','SC10043','11-AUG-2017','01-JAN-2018','1');
+insert into scholarship_details values ('S10065','SC10041','11-AUG-2017','01-JAN-2018','1');
+insert into scholarship_details values ('S10075','SC10076','01-JAN-2018','01-AUG-2018','1');
+insert into scholarship_details values ('S10071','SC10074','01-JAN-2018','01-AUG-2018','1');
+insert into scholarship_details values ('S10062','SC10044','01-JAN-2018','01-AUG-2018','1');
+insert into scholarship_details values ('S10072','SC10080','01-JAN-2018','01-AUG-2018','1');
+insert into scholarship_details values ('S10072','SC10057','01-JAN-2018','01-AUG-2018','1');
+insert into scholarship_details values ('S10066','SC10060','01-JAN-2018','01-AUG-2018','1');
+insert into scholarship_details values ('S10064','SC10064','01-JAN-2018','01-AUG-2018','1');
+insert into scholarship_details values ('S10067','SC10051','01-JAN-2018','01-AUG-2018','1');
+insert into scholarship_details values ('S10069','SC10055','01-JAN-2018','01-AUG-2018','1');
+insert into scholarship_details values ('S10074','SC10059','01-JAN-2018','01-AUG-2018','1');
+
+delete from scholarship_details;
+delete from cash_scholarship;
+delete from graduate_assistantship;
+delete from scholarship;
+commit;
+rollback;
+select * from scholarship;
+
+flashback TABLE scholarship to before drop;
+flashback TABLE cash_scholarship to before drop;
+flashback TABLE graduate_assistantship to before drop;
+flashback TABLE scholarship_details to before drop;
+
+
+--STUDENT DETAILS
+select * from student;
+select * from student_details;
+select * from events;
+
+CREATE SEQUENCE STUDENT_DETAILS_SEQ
+ START WITH  10001
+ MAXVALUE 99999
+ INCREMENT BY   1;
+
+CREATE TRIGGER STUDENT_DETAILS_TRG 
+BEFORE INSERT ON STUDENT_DETAILS 
+FOR EACH ROW 
+BEGIN
+  <<COLUMN_SEQUENCES>>
+  BEGIN
+    IF INSERTING THEN
+      SELECT 'SD' || STUDENT_DETAILS_SEQ.NEXTVAL INTO :NEW.ENTRY_ID FROM SYS.DUAL;
+    END IF;
+  END COLUMN_SEQUENCES;
+END;
+/
+drop trigger STUDENT_DETAILS_TRG; 
+--ATTENDANCE SIGNUP
+
+CREATE SEQUENCE ATTENDANCE_SIGNUP_SEQ1
+ START WITH  10001
+ MAXVALUE 99999
+ INCREMENT BY   1;
+
+CREATE TRIGGER ATTENDANCE_SIGNUP_TRG1 
+BEFORE INSERT ON ATTENDANCE_SIGNUP 
+FOR EACH ROW 
+BEGIN
+  <<COLUMN_SEQUENCES>>
+  BEGIN
+    IF INSERTING THEN
+      SELECT 'AS' || ATTENDANCE_SIGNUP_SEQ1.NEXTVAL INTO :NEW.SIGNUPID FROM SYS.DUAL;
+    END IF;
+  END COLUMN_SEQUENCES;
+END;
+/
+
+select * from attendance_signup;
+select * from faculty;
+select * from can_authorize;
+select * from signup_types;
+select * from pillar;
+
+insert into attendance_signup values ('1','14-AUG-2018','Online','F10002', 'SUT10006','S10055','P10021','E10071');
+insert into attendance_signup values ('1','25-AUG-2018','Online','F10009', 'SUT10004','S10055','P10022','E10103');
+insert into attendance_signup values ('1','07-SEP-2018','Online','F10011', 'SUT10004','S10055','P10021','E10077');
+insert into attendance_signup values ('1','03-SEP-2018','Online','F10014', 'SUT10004','S10055','P10022','E10097');
+insert into attendance_signup values ('1','28-SEP-2018','Form','F10011', 'SUT10004','S10055','P10022','E10107');
+insert into attendance_signup values ('1','09-SEP-2018','Online','F10002', 'SUT10005','S10055','P10021','E10057');
+insert into attendance_signup values ('1','05-OCT-2018','Online','F10010', 'SUT10005','S10055','P10021','E10071');
+insert into attendance_signup values ('1','29-OCT-2018','Online','F10009', 'SUT10004','S10055','P10022','E10109');
+insert into attendance_signup values ('1','25-OCT-2018','Online','F10007', 'SUT10006','S10055','P10023','E10089');
+insert into attendance_signup values ('1','22-OCT-2018','Online','F10008', 'SUT10005','S10055','P10021','E10075');
+insert into attendance_signup values ('1','18-NOV-2018','Online','F10015', 'SUT10004','S10055','P10021','E10071');
+insert into attendance_signup values ('1','26-NOV-2018','Form','F10002', 'SUT10004','S10055','P10021','E10073');
+insert into attendance_signup values ('1','01-NOV-2018','Form','F10001', 'SUT10006','S10055','P10022','E10097');
+
+insert into attendance_signup values ('1','14-AUG-2018','Online','F10002', 'SUT10006','S10056','P10021','E10071');
+insert into attendance_signup values ('1','25-AUG-2018','Online','F10009', 'SUT10004','S10056','P10022','E10103');
+insert into attendance_signup values ('1','07-SEP-2018','Online','F10011', 'SUT10004','S10056','P10021','E10077');
+insert into attendance_signup values ('1','03-SEP-2018','Online','F10014', 'SUT10004','S10056','P10022','E10097');
+insert into attendance_signup values ('1','28-SEP-2018','Form','F10011', 'SUT10004','S10056','P10022','E10107');
+insert into attendance_signup values ('1','09-SEP-2018','Online','F10002', 'SUT10005','S10056','P10021','E10057');
+insert into attendance_signup values ('1','05-OCT-2018','Online','F10010', 'SUT10005','S10056','P10021','E10071');
+insert into attendance_signup values ('1','29-OCT-2018','Online','F10009', 'SUT10004','S10056','P10022','E10109');
+insert into attendance_signup values ('1','25-OCT-2018','Online','F10007', 'SUT10006','S10056','P10023','E10089');
+insert into attendance_signup values ('1','22-OCT-2018','Online','F10008', 'SUT10005','S10056','P10021','E10075');
+insert into attendance_signup values ('1','18-NOV-2018','Online','F10015', 'SUT10004','S10056','P10021','E10071');
+insert into attendance_signup values ('1','26-NOV-2018','Form','F10002', 'SUT10004','S10056','P10021','E10073');
+insert into attendance_signup values ('1','01-NOV-2018','Form','F10001', 'SUT10006','S10056','P10022','E10097');
+
+insert into attendance_signup values ('1','14-AUG-2018','Online','F10002', 'SUT10006','S10057','P10021','E10071');
+insert into attendance_signup values ('1','25-AUG-2018','Online','F10009', 'SUT10004','S10057','P10022','E10103');
+insert into attendance_signup values ('1','07-SEP-2018','Online','F10011', 'SUT10004','S10057','P10021','E10077');
+insert into attendance_signup values ('1','03-SEP-2018','Online','F10014', 'SUT10004','S10057','P10022','E10097');
+insert into attendance_signup values ('1','28-SEP-2018','Form','F10011', 'SUT10004','S10057','P10022','E10107');
+insert into attendance_signup values ('1','09-SEP-2018','Online','F10002', 'SUT10005','S10057','P10021','E10057');
+insert into attendance_signup values ('1','05-OCT-2018','Online','F10010', 'SUT10005','S10057','P10021','E10071');
+insert into attendance_signup values ('1','29-OCT-2018','Online','F10009', 'SUT10004','S10057','P10022','E10109');
+insert into attendance_signup values ('1','25-OCT-2018','Online','F10007', 'SUT10006','S10056','P10023','E10089');
+insert into attendance_signup values ('1','22-OCT-2018','Online','F10008', 'SUT10005','S10057','P10021','E10075');
+insert into attendance_signup values ('1','18-NOV-2018','Online','F10015', 'SUT10004','S10057','P10021','E10071');
+insert into attendance_signup values ('1','26-NOV-2018','Form','F10002', 'SUT10004','S10057','P10021','E10073');
+insert into attendance_signup values ('1','01-NOV-2018','Form','F10001', 'SUT10006','S10057','P10022','E10097');
+
+insert into attendance_signup values ('1','14-AUG-2018','Online','F10002', 'SUT10006','S10075','P10021','E10071');
+insert into attendance_signup values ('1','25-AUG-2018','Online','F10009', 'SUT10004','S10075','P10022','E10103');
+insert into attendance_signup values ('1','07-SEP-2018','Online','F10011', 'SUT10004','S10075','P10021','E10077');
+insert into attendance_signup values ('1','03-SEP-2018','Online','F10014', 'SUT10004','S10075','P10022','E10097');
+insert into attendance_signup values ('1','28-SEP-2018','Form','F10011', 'SUT10004','S10075','P10022','E10107');
+insert into attendance_signup values ('1','09-SEP-2018','Online','F10002', 'SUT10005','S10075','P10021','E10057');
+insert into attendance_signup values ('1','05-OCT-2018','Online','F10010', 'SUT10005','S10075','P10021','E10071');
+insert into attendance_signup values ('1','29-OCT-2018','Online','F10009', 'SUT10004','S10075','P10022','E10109');
+insert into attendance_signup values ('1','25-OCT-2018','Online','F10007', 'SUT10006','S10075','P10023','E10089');
+insert into attendance_signup values ('1','22-OCT-2018','Online','F10008', 'SUT10005','S10075','P10021','E10075');
+insert into attendance_signup values ('1','18-NOV-2018','Online','F10015', 'SUT10004','S10075','P10021','E10071');
+insert into attendance_signup values ('1','26-NOV-2018','Form','F10002', 'SUT10004','S10075','P10021','E10073');
+insert into attendance_signup values ('1','01-NOV-2018','Form','F10001', 'SUT10006','S10075','P10022','E10097');
+
+insert into attendance_signup values ('1','14-AUG-2018','Online','F10002', 'SUT10006','S10070','P10021','E10071');
+insert into attendance_signup values ('1','25-AUG-2018','Online','F10009', 'SUT10004','S10070','P10022','E10103');
+insert into attendance_signup values ('1','07-SEP-2018','Online','F10011', 'SUT10004','S10070','P10021','E10077');
+insert into attendance_signup values ('1','03-SEP-2018','Online','F10014', 'SUT10004','S10070','P10022','E10097');
+insert into attendance_signup values ('1','28-SEP-2018','Form','F10011', 'SUT10004','S10070','P10022','E10107');
+insert into attendance_signup values ('1','09-SEP-2018','Online','F10002', 'SUT10005','S10070','P10021','E10057');
+insert into attendance_signup values ('1','05-OCT-2018','Online','F10010', 'SUT10005','S10070','P10021','E10071');
+insert into attendance_signup values ('1','29-OCT-2018','Online','F10009', 'SUT10004','S10070','P10022','E10109');
+insert into attendance_signup values ('1','25-OCT-2018','Online','F10007', 'SUT10006','S10070','P10023','E10089');
+insert into attendance_signup values ('1','22-OCT-2018','Online','F10008', 'SUT10005','S10070','P10021','E10075');
+insert into attendance_signup values ('1','18-NOV-2018','Online','F10015', 'SUT10004','S10070','P10021','E10071');
+insert into attendance_signup values ('1','26-NOV-2018','Form','F10002', 'SUT10004','S10070','P10021','E10073');
+insert into attendance_signup values ('1','01-NOV-2018','Form','F10001', 'SUT10006','S10070','P10022','E10097');
+
+
+insert into attendance_signup values ('1','14-AUG-2018','Online','F10002', 'SUT10006','S10066','P10021','E10071');
+insert into attendance_signup values ('1','25-AUG-2018','Online','F10009', 'SUT10004','S10066','P10022','E10103');
+insert into attendance_signup values ('1','07-SEP-2018','Online','F10011', 'SUT10004','S10066','P10021','E10077');
+insert into attendance_signup values ('1','03-SEP-2018','Online','F10014', 'SUT10004','S10066','P10022','E10097');
+insert into attendance_signup values ('1','28-SEP-2018','Form','F10011', 'SUT10004','S10066','P10022','E10107');
+insert into attendance_signup values ('1','09-SEP-2018','Online','F10002', 'SUT10005','S10066','P10021','E10057');
+insert into attendance_signup values ('1','05-OCT-2018','Online','F10010', 'SUT10005','S10066','P10021','E10071');
+insert into attendance_signup values ('1','29-OCT-2018','Online','F10009', 'SUT10004','S10066','P10022','E10109');
+insert into attendance_signup values ('1','25-OCT-2018','Online','F10007', 'SUT10006','S10066','P10023','E10089');
+insert into attendance_signup values ('1','22-OCT-2018','Online','F10008', 'SUT10005','S10066','P10021','E10075');
+insert into attendance_signup values ('1','18-NOV-2018','Online','F10015', 'SUT10004','S10066','P10021','E10071');
+insert into attendance_signup values ('1','26-NOV-2018','Form','F10002', 'SUT10004','S10066','P10021','E10073');
+
+insert into attendance_signup values ('1','14-AUG-2018','Online','F10002', 'SUT10006','S10069','P10021','E10071');
+insert into attendance_signup values ('1','25-AUG-2018','Online','F10009', 'SUT10004','S10069','P10022','E10103');
+insert into attendance_signup values ('1','07-SEP-2018','Online','F10011', 'SUT10004','S10069','P10021','E10077');
+insert into attendance_signup values ('1','03-SEP-2018','Online','F10014', 'SUT10004','S10069','P10022','E10097');
+insert into attendance_signup values ('1','28-SEP-2018','Form','F10011', 'SUT10004','S10069','P10022','E10107');
+insert into attendance_signup values ('1','09-SEP-2018','Online','F10002', 'SUT10005','S10069','P10021','E10057');
+insert into attendance_signup values ('1','05-OCT-2018','Online','F10010', 'SUT10005','S10069','P10021','E10071');
+insert into attendance_signup values ('1','29-OCT-2018','Online','F10009', 'SUT10004','S10069','P10022','E10109');
+insert into attendance_signup values ('1','25-OCT-2018','Online','F10007', 'SUT10006','S10069','P10023','E10089');
+insert into attendance_signup values ('1','22-OCT-2018','Online','F10008', 'SUT10005','S10069','P10021','E10075');
+insert into attendance_signup values ('1','18-NOV-2018','Online','F10015', 'SUT10004','S10069','P10021','E10071');
+insert into attendance_signup values ('1','26-NOV-2018','Form','F10002', 'SUT10004','S10069','P10021','E10073');
+
+
+insert into attendance_signup values ('1','14-AUG-2018','Online','F10002', 'SUT10006','S10073','P10021','E10071');
+insert into attendance_signup values ('1','25-AUG-2018','Online','F10009', 'SUT10004','S10073','P10022','E10103');
+insert into attendance_signup values ('1','07-SEP-2018','Online','F10011', 'SUT10004','S10073','P10021','E10077');
+insert into attendance_signup values ('1','03-SEP-2018','Online','F10014', 'SUT10004','S10073','P10022','E10097');
+insert into attendance_signup values ('1','28-SEP-2018','Form','F10011', 'SUT10004','S10073','P10022','E10107');
+insert into attendance_signup values ('1','09-SEP-2018','Online','F10002', 'SUT10005','S10073','P10021','E10057');
+insert into attendance_signup values ('1','05-OCT-2018','Online','F10010', 'SUT10005','S10073','P10021','E10071');
+insert into attendance_signup values ('1','29-OCT-2018','Online','F10009', 'SUT10004','S10073','P10022','E10109');
+insert into attendance_signup values ('1','25-OCT-2018','Online','F10007', 'SUT10006','S10073','P10023','E10089');
+insert into attendance_signup values ('1','22-OCT-2018','Online','F10008', 'SUT10005','S10073','P10021','E10075');
+
+insert into attendance_signup values ('1','14-AUG-2018','Online','F10002', 'SUT10006','S10062','P10021','E10071');
+insert into attendance_signup values ('1','25-AUG-2018','Online','F10009', 'SUT10004','S10062','P10022','E10103');
+insert into attendance_signup values ('1','07-SEP-2018','Online','F10011', 'SUT10004','S10062','P10021','E10077');
+insert into attendance_signup values ('1','03-SEP-2018','Online','F10014', 'SUT10004','S10062','P10022','E10097');
+insert into attendance_signup values ('1','28-SEP-2018','Form','F10011', 'SUT10004','S10062','P10022','E10107');
+insert into attendance_signup values ('1','09-SEP-2018','Online','F10002', 'SUT10005','S10062','P10021','E10057');
+insert into attendance_signup values ('1','05-OCT-2018','Online','F10010', 'SUT10005','S10062','P10021','E10071');
+insert into attendance_signup values ('1','29-OCT-2018','Online','F10009', 'SUT10004','S10062','P10022','E10109');
+insert into attendance_signup values ('1','25-OCT-2018','Online','F10007', 'SUT10006','S10062','P10023','E10089');
+insert into attendance_signup values ('1','22-OCT-2018','Online','F10008', 'SUT10005','S10062','P10021','E10075');
+
+
+insert into attendance_signup values ('1','03-SEP-2018','Online','F10014', 'SUT10004','S10074','P10022','E10097');
+insert into attendance_signup values ('1','28-SEP-2018','Form','F10011', 'SUT10004','S10074','P10022','E10107');
+insert into attendance_signup values ('1','09-SEP-2018','Online','F10002', 'SUT10005','S10074','P10021','E10057');
+insert into attendance_signup values ('1','05-OCT-2018','Online','F10010', 'SUT10005','S10074','P10021','E10071');
+insert into attendance_signup values ('1','29-OCT-2018','Online','F10009', 'SUT10004','S10074','P10022','E10109');
+insert into attendance_signup values ('1','25-OCT-2018','Online','F10007', 'SUT10006','S10074','P10023','E10089');
+insert into attendance_signup values ('1','22-OCT-2018','Online','F10008', 'SUT10005','S10074','P10021','E10075');
+
+insert into attendance_signup values ('1','03-SEP-2018','Online','F10014', 'SUT10004','S10066','P10022','E10097');
+insert into attendance_signup values ('1','28-SEP-2018','Form','F10011', 'SUT10004','S10066','P10022','E10107');
+insert into attendance_signup values ('1','09-SEP-2018','Online','F10002', 'SUT10005','S10066','P10021','E10057');
+insert into attendance_signup values ('1','05-OCT-2018','Online','F10010', 'SUT10005','S10066','P10021','E10071');
+insert into attendance_signup values ('1','29-OCT-2018','Online','F10009', 'SUT10004','S10066','P10022','E10109');
+insert into attendance_signup values ('1','25-OCT-2018','Online','F10007', 'SUT10006','S10066','P10023','E10089');
+insert into attendance_signup values ('1','22-OCT-2018','Online','F10008', 'SUT10005','S10066','P10021','E10075');
+
+update attendance_signup set semesterterm = 'FALL';
+update attendance_signup set pending_flag = 1;
+commit;
+rollback;
+
+select * from attendance_signup;
+delete from attendance_signup;
+
+
+insert into attendance_signup values ('1','21-OCT-2018','Online','F10008', 'SUT10005','S10066','P10021','E10075','FALL',1,'01-OCT-2018');
+insert into attendance_signup values ('1','21-NOV-2018','Online','F10008', 'SUT10005','S10066','P10021','E10071','FALL',1,'03-NOV-2018');
+insert into attendance_signup values ('1','24-NOV-2018','Online','F10008', 'SUT10005','S10066','P10021','E10089','FALL',1,'11-NOV-2018');
+commit;
+--PROCEDURE 1
+create or replace procedure fill_report
+AS
+
+as_old_sid attendance_signup.sid%type;
+as_detail attendance_signup %ROWTYPE;
+as_event_id attendance_signup.eventid%type;
+as_pillar_type events.pillar_type%type;
+as_points events.points_allocated%type;
+new_points varchar2(20);
+curr_points varchar2(20);
+s_flag number(1);
+
+CURSOR c1 IS SELECT *
+FROM attendance_signup
+WHERE pending_flag =1
+--group by sid
+ORDER BY dateofdeclaration;
+
+BEGIN
+s_flag:=1;
+
+OPEN c1;
+LOOP
+new_points := 0;
+
+FETCH c1 INTO as_detail;
+EXIT WHEN c1%NOTFOUND;
+
+IF (s_flag =1) THEN 
+as_old_sid := as_detail.sid;
+s_flag:= 0;
+END IF;
+
+IF (as_detail.sid = as_old_sid) THEN
+
+    SELECT event_id,pillar_type,points_allocated
+    INTO as_event_id, as_pillar_type, as_points --create var
+    FROM events
+    WHERE event_id = as_detail.eventid;
+    
+    new_points := new_points + as_points; --create var
+    
+    UPDATE student_report SET points_obtained = points_obtained + new_points
+    WHERE sid = as_detail.sid;
+    
+    SELECT points_obtained INTO curr_points
+    FROM student_report
+    WHERE sid = as_detail.sid;
+    
+    IF curr_points <= 45 THEN
+    
+    UPDATE student_report SET remaining_point = 45 - points_obtained
+    WHERE sid = as_detail.sid;
+    
+    ELSE
+    
+    UPDATE student_report SET remaining_point = 'PRO'
+    WHERE sid = as_detail.sid;
+    
+    END IF;
+    
+    UPDATE attendance_signup SET pending_flag = 0
+    WHERE sid = as_detail.sid;
+
+ELSE
+
+    SELECT event_id,pillar_type,points_allocated
+    INTO as_event_id, as_pillar_type, as_points --create var
+    FROM events
+    WHERE event_id = as_detail.eventid;
+    
+    new_points := new_points + as_points; --create var
+    
+    UPDATE student_report SET points_obtained = points_obtained + new_points
+    WHERE sid = as_detail.sid;
+    
+    SELECT points_obtained INTO curr_points
+    FROM student_report
+    WHERE sid = as_detail.sid;
+    
+    IF curr_points <= 45 THEN
+    
+    UPDATE student_report SET remaining_point = 45 - points_obtained
+    WHERE sid = as_detail.sid;
+    
+    ELSE
+    
+    UPDATE student_report SET remaining_point = 'PRO'
+    WHERE sid = as_detail.sid;
+    
+    END IF;
+    
+    UPDATE attendance_signup SET pending_flag = 0
+    WHERE sid = as_detail.sid;
+    
+as_old_sid := as_detail.sid;
+END IF;
+
+END LOOP;
+CLOSE c1;
+
+END;
+/
+
+--test
+select * from attendance_signup
+where sid = 'S10066';
+select * from events;
+
+select * from student_report;
+insert into student_report (sid)
+select s.sid from student s;
+
+update student_report set remaining_point = 0; 
+
+execute fill_report;
+rollback;
+commit;
