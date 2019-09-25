@@ -1,0 +1,231 @@
+select * from student;
+
+CREATE VIEW STUD_NAME
+( SID
+, NAME
+)
+AS SELECT sid, firstname || ' '  || lastname
+FROM student;
+
+select * from stud_name;
+
+commit;
+
+select * from stu_report;
+
+
+
+CREATE OR REPLACE VIEW STU_REPORT
+AS with s1
+as
+(
+select s.sid as "Student ID",s.firstname as "First Name",s.middlename as "Middle Name",s.lastname as "Last Name",p.type as "Program Type" 
+                from student s,program p,semester_details sd
+                where s.sid=sd.sid(+)
+                and p.pid=sd.pid
+                
+)
+,
+s2
+as
+(
+select s.sid as "Student ID",NVL(sum(points_allocated),0) as "Academic Total"
+                from student s,attendance_signup a,events e
+                where a.eventid=e.event_id
+                and s.sid=a.sid(+)
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10021'
+                group by s.sid
+
+)
+,
+s3
+as
+(
+select s.sid as "Student ID",sum(points_allocated) as "Social Total"
+                from student s,attendance_signup a,events e
+                where e.event_id=a.eventid
+                and s.sid=a.sid
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10022'
+                group by s.sid
+
+)
+,
+s4
+as
+(
+select s.sid as "Student ID",sum(points_allocated) as "Ethical Total"
+                from student s,attendance_signup a,events e
+                where e.event_id=a.eventid
+                and s.sid=a.sid
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10023'
+                group by s.sid
+)
+,
+s5 as
+(
+select s.sid as "Student ID",sum(points_allocated) as "CM in Academic Total",CASE WHEN sum(points_allocated)>8 THEN 'Y' ELSE 'N' END as "IS CM(ACADEMIC)"
+                from student s,attendance_signup a,events e
+                where e.event_id=a.eventid
+                and s.sid=a.sid
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10021'
+                and a.signuptypeid='SUT10004'
+                group by s.sid
+)
+,
+s6
+as
+(
+select s.sid as "Student ID",sum(points_allocated) as "CM in Social Total",CASE WHEN sum(points_allocated)>8 THEN 'Y' ELSE 'N' END as "IS CM(SOCIAL)"
+                from student s,attendance_signup a,events e
+                where e.event_id=a.eventid
+                and s.sid=a.sid
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10022'
+                and a.signuptypeid='SUT10004'
+                group by s.sid
+
+)
+,
+s7
+as
+(
+select s.sid as "Student ID",NVL(sum(points_allocated),0) as "Grand Total"
+                from student s,attendance_signup a,events e
+                where a.eventid=e.event_id
+                and s.sid=a.sid(+)
+                --and e.pillar_type='Academic'
+                group by s.sid
+
+)
+
+select s1."Student ID",s1."First Name",s1."Middle Name",s1."Last Name",s1."Program Type",NVL(s2."Academic Total",0) as "Academic Total",
+NVL(s3."Social Total",0) as "Social Total",NVL(s4."Ethical Total",0) as "Ethical Total",NVL(s5."CM in Academic Total",0) as "CM in Academic Total",
+NVL(s5."IS CM(ACADEMIC)",'N') as "IS CM(ACADEMIC)",NVL(s6."CM in Social Total",0) as "CM in Social Total",NVL(s6."IS CM(SOCIAL)",'N') as "IS CM(SOCIAL)",
+NVL(s7."Grand Total",0) as "Grand Total"
+from s1,s2,s3,s4,s5,s6,s7
+where s1."Student ID"=s2."Student ID"(+)
+and s1."Student ID"=s3."Student ID"(+)
+and s1."Student ID"=s4."Student ID"(+)
+and s1."Student ID"=s5."Student ID"(+)
+and s1."Student ID"=s6."Student ID"(+)
+and s1."Student ID"=s7."Student ID"(+)
+--and NVL(s7."Grand Total",0)<15
+;
+
+
+CREATE OR REPLACE VIEW COM_REPORT
+AS
+with s1
+as
+(
+select s.sid as "Student ID",s.firstname as "First Name",s.middlename as "Middle Name",s.lastname as "Last Name",p.type as "Program Type" 
+                from student s,program p,semester_details sd
+                where s.sid=sd.sid(+)
+                and p.pid=sd.pid
+                
+)
+,
+s2
+as
+(
+select s.sid as "Student ID",NVL(sum(points_allocated),0) as "Academic Total"
+                from student s,attendance_signup a,events e
+                where a.eventid=e.event_id
+                and s.sid=a.sid(+)
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10021'
+                group by s.sid
+
+)
+,
+s3
+as
+(
+select s.sid as "Student ID",sum(points_allocated) as "Social Total"
+                from student s,attendance_signup a,events e
+                where e.event_id=a.eventid
+                and s.sid=a.sid
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10022'
+                group by s.sid
+
+)
+,
+s4
+as
+(
+select s.sid as "Student ID",sum(points_allocated) as "Ethical Total"
+                from student s,attendance_signup a,events e
+                where e.event_id=a.eventid
+                and s.sid=a.sid
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10023'
+                group by s.sid
+)
+,
+s5 as
+(
+select s.sid as "Student ID",sum(points_allocated) as "CM in Academic Total",CASE WHEN sum(points_allocated)>8 THEN 'Y' ELSE 'N' END as "IS CM(ACADEMIC)"
+                from student s,attendance_signup a,events e
+                where e.event_id=a.eventid
+                and s.sid=a.sid
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10021'
+                and a.signuptypeid='SUT10004'
+                group by s.sid
+)
+,
+s6
+as
+(
+select s.sid as "Student ID",sum(points_allocated) as "CM in Social Total",CASE WHEN sum(points_allocated)>8 THEN 'Y' ELSE 'N' END as "IS CM(SOCIAL)"
+                from student s,attendance_signup a,events e
+                where e.event_id=a.eventid
+                and s.sid=a.sid
+                --and e.pillar_type='Academic'
+                and a.pillarid='P10022'
+                and a.signuptypeid='SUT10004'
+                group by s.sid
+
+)
+,
+s7
+as
+(
+select s.sid as "Student ID",NVL(sum(points_allocated),0) as "Grand Total"
+                from student s,attendance_signup a,events e
+                where a.eventid=e.event_id
+                and s.sid=a.sid(+)
+                --and e.pillar_type='Academic'
+                group by s.sid
+
+)
+
+select s1."Student ID",s1."First Name",s1."Middle Name",s1."Last Name",s1."Program Type",NVL(s2."Academic Total",0) as "Academic Total",
+NVL(s3."Social Total",0) as "Social Total",NVL(s4."Ethical Total",0) as "Ethical Total",NVL(s5."CM in Academic Total",0) as "CM in Academic Total",
+NVL(s5."IS CM(ACADEMIC)",'N') as "IS CM(ACADEMIC)",NVL(s6."CM in Social Total",0) as "CM in Social Total",NVL(s6."IS CM(SOCIAL)",'N') as "IS CM(SOCIAL)",
+NVL(s7."Grand Total",0) as "Grand Total"
+from s1,s2,s3,s4,s5,s6,s7
+where s1."Student ID"=s2."Student ID"(+)
+and s1."Student ID"=s3."Student ID"(+)
+and s1."Student ID"=s4."Student ID"(+)
+and s1."Student ID"=s5."Student ID"(+)
+and s1."Student ID"=s6."Student ID"(+)
+and s1."Student ID"=s7."Student ID"(+);
+--and NVL(s7."Grand Total",0) <=45;
+--and "IS CM(SOCIAL)"='Y'
+--and "IS CM(ACADEMIC)"='Y';
+
+
+
+select * from com_report;
+
+
+
+
+EDM_Project_query2.txt
+Displaying EDM_Project_query2.txt.
